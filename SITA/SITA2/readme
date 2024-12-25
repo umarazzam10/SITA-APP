@@ -1,0 +1,169 @@
+-- Database schema for Final Project Management System
+-- Users table (for both lecturers and students)
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('dosen', 'mahasiswa') NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    nim VARCHAR(20) UNIQUE,  -- NULL for lecturers
+    profile_photo VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+-- Thesis Submissions table
+CREATE TABLE thesis_submissions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    research_object TEXT NOT NULL,
+    methodology TEXT NOT NULL,
+    attachment_file VARCHAR(255) NOT NULL,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    rejection_reason TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES users(id)
+);
+-- Seminar Submissions table
+CREATE TABLE seminar_submissions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    thesis_id INT NOT NULL,
+    student_id INT NOT NULL,
+    seminar_date DATE,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    rejection_reason TEXT,
+    suggested_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (thesis_id) REFERENCES thesis_submissions(id),
+    FOREIGN KEY (student_id) REFERENCES users(id)
+);
+-- Final Defense Submissions table
+CREATE TABLE defense_submissions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    seminar_id INT NOT NULL,
+    student_id INT NOT NULL,
+    defense_date DATE,
+    approval_letter_file VARCHAR(255),
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    rejection_reason TEXT,
+    suggested_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (seminar_id) REFERENCES seminar_submissions(id),
+    FOREIGN KEY (student_id) REFERENCES users(id)
+);
+-- Logbook table
+CREATE TABLE logbooks (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT NOT NULL,
+    date DATE NOT NULL,
+    activity TEXT NOT NULL,
+    is_locked BOOLEAN DEFAULT FALSE,
+    lecturer_notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES users(id)
+);
+-- Notifications table
+CREATE TABLE notifications (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+yang baru 
+
+-- Users table (for both lecturers and students)
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('dosen', 'mahasiswa') NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    nim VARCHAR(20) UNIQUE,  -- NULL for lecturers
+    profile_photo VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Thesis Submissions table
+CREATE TABLE thesis_submissions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    research_object TEXT NOT NULL,
+    methodology TEXT NOT NULL,
+    attachment_file VARCHAR(255) NOT NULL,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    rejection_reason TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES users(id)
+);
+
+-- Seminar Submissions table
+CREATE TABLE seminar_submissions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    thesis_id INT NOT NULL,
+    student_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    research_object TEXT NOT NULL,
+    methodology TEXT NOT NULL,
+    seminar_date DATE,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    rejection_reason TEXT,
+    suggested_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (thesis_id) REFERENCES thesis_submissions(id),
+    FOREIGN KEY (student_id) REFERENCES users(id)
+);
+
+-- Final Defense Submissions table
+CREATE TABLE defense_submissions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    seminar_id INT NOT NULL,
+    student_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    research_object TEXT NOT NULL,
+    methodology TEXT NOT NULL,
+    defense_date DATE,
+    approval_letter_file VARCHAR(255),
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    rejection_reason TEXT,
+    suggested_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (seminar_id) REFERENCES seminar_submissions(id),
+    FOREIGN KEY (student_id) REFERENCES users(id)
+);
+
+-- Logbook table
+CREATE TABLE logbooks (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT NOT NULL,
+    date DATE NOT NULL,
+    activity TEXT NOT NULL,
+    is_locked BOOLEAN DEFAULT FALSE,
+    lecturer_notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES users(id)
+);
+
+-- Notifications table
+CREATE TABLE notifications (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
